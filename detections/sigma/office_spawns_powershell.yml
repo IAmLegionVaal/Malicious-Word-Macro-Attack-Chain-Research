@@ -1,0 +1,33 @@
+title: Microsoft Office Application Spawns PowerShell
+id: 5d9f5de8-a09e-4b7f-bb10-2d1642f78093
+status: experimental
+description: Detects Microsoft Office applications creating PowerShell processes, a high-value signal for malicious macro and document execution.
+author: Dewald Pretorius
+date: 2026-06-30
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+  - https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-reference
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  parent:
+    ParentImage|endswith:
+      - '\WINWORD.EXE'
+      - '\EXCEL.EXE'
+      - '\POWERPNT.EXE'
+      - '\OUTLOOK.EXE'
+      - '\MSACCESS.EXE'
+      - '\ONENOTE.EXE'
+  child:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+  condition: parent and child
+falsepositives:
+  - Approved enterprise macros or Office add-ins that deliberately invoke PowerShell
+level: high
+tags:
+  - attack.execution
+  - attack.t1059.001
+  - attack.t1059.005
