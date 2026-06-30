@@ -1,0 +1,4 @@
+Sequence,SourceHost,SourceIP,DestinationHost,DestinationIP,DestinationPort,Protocol,ObservedPurpose
+1,Windows victim,10.0.2.5,Kali attacker,10.0.2.10,8080,TCP,Retrieve staged content over HTTP
+2,Windows victim,10.0.2.5,Kali attacker,10.0.2.10,1337,TCP,Establish outbound reverse connection
+3,Windows victim,10.0.2.5,Kali attacker,10.0.2.10,63372/TCP source,Ephemeral source port visible in listener output
