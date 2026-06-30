@@ -1,0 +1,9 @@
+Sequence,Host,ParentProcess,ProcessOrAction,ObservedValue
+1,Windows victim,explorer.exe or user context,WINWORD.EXE,Open C:\Users\PC\Desktop\invoice.docm
+2,Windows victim,WINWORD.EXE,VBA auto-execution,AutoOpen and Document_Open invoke Trigger
+3,Windows victim,WINWORD.EXE,powershell.exe,Hidden PowerShell stage
+4,Windows victim,powershell.exe,HTTP retrieval,10.0.2.10:8080/powercat.ps1
+5,Windows victim,powershell.exe,TCP connection,10.0.2.10:1337
+6,Windows victim,powershell.exe,cmd.exe,Interactive Windows command shell returned
+7,Windows victim,cmd.exe,whoami,desktop\pc
+8,Windows victim,cmd.exe,dir,C:\Users\PC\Desktop containing invoice.docm
