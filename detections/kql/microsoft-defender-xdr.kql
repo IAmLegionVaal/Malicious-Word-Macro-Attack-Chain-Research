@@ -1,0 +1,110 @@
+// ============================================================================
+// Malicious Word/VBA -> PowerShell attack-chain hunting
+// Microsoft Defender XDR Advanced Hunting
+// Review and tune before production alerting.
+// ============================================================================
+
+// 1. Office applications spawning scripting engines or common LOLBins
+DeviceProcessEvents
+| where Timestamp > ago(30d)
+| where InitiatingProcessFileName in~ (
+    "winword.exe", "excel.exe", "powerpnt.exe",
+    "outlook.exe", "msaccess.exe", "onenote.exe"
+)
+| where FileName in~ (
+    "powershell.exe", "pwsh.exe", "cmd.exe",
+    "wscript.exe", "cscript.exe", "mshta.exe",
+    "rundll32.exe", "regsvr32.exe", "installutil.exe",
+    "certutil.exe", "bitsadmin.exe", "curl.exe"
+)
+| project Timestamp, DeviceName, AccountName,
+          InitiatingProcessFileName, InitiatingProcessCommandLine,
+          FileName, ProcessCommandLine, SHA1, ReportId
+| order by Timestamp desc;
+
+
+// 2. Office spawning PowerShell with suspicious command-line features
+let SuspiciousPowerShellTerms = dynamic([
+    "-windowstyle hidden", "-w hidden", "-encodedcommand", " -enc ",
+    "downloadstring", "invoke-webrequest", "iwr ", "webclient",
+    "invoke-expression", "iex ", "frombase64string", "powercat"
+]);
+DeviceProcessEvents
+| where Timestamp > ago(30d)
+| where InitiatingProcessFileName in~ (
+    "winword.exe", "excel.exe", "powerpnt.exe",
+    "outlook.exe", "msaccess.exe", "onenote.exe"
+)
+| where FileName in~ ("powershell.exe", "pwsh.exe")
+| extend LowerCommandLine = tolower(ProcessCommandLine)
+| where LowerCommandLine has_any (SuspiciousPowerShellTerms)
+| project Timestamp, DeviceName, AccountName,
+          InitiatingProcessFileName, ProcessCommandLine,
+          ProcessIntegrityLevel, ProcessTokenElevation, SHA1
+| order by Timestamp desc;
+
+
+// 3. Network connections from PowerShell when Office is the parent
+DeviceNetworkEvents
+| where Timestamp > ago(30d)
+| where InitiatingProcessFileName in~ ("powershell.exe", "pwsh.exe")
+| where InitiatingProcessParentFileName in~ (
+    "winword.exe", "excel.exe", "powerpnt.exe",
+    "outlook.exe", "msaccess.exe", "onenote.exe"
+)
+| project Timestamp, DeviceName, InitiatingProcessAccountName,
+          InitiatingProcessParentFileName, InitiatingProcessFileName,
+          InitiatingProcessCommandLine, RemoteIP, RemotePort,
+          RemoteUrl, Protocol, ActionType
+| order by Timestamp desc;
+
+
+// 4. PowerShell creating a Windows command shell
+DeviceProcessEvents
+| where Timestamp > ago(30d)
+| where FileName =~ "cmd.exe"
+| where InitiatingProcessFileName in~ ("powershell.exe", "pwsh.exe")
+| project Timestamp, DeviceName, AccountName,
+          InitiatingProcessParentFileName,
+          InitiatingProcessFileName,
+          InitiatingProcessCommandLine,
+          ProcessCommandLine, ProcessIntegrityLevel
+| order by Timestamp desc;
+
+
+// 5. Discovery commands after suspicious Office-triggered PowerShell
+let SuspiciousOfficePowerShell =
+    DeviceProcessEvents
+    | where Timestamp > ago(30d)
+    | where InitiatingProcessFileName in~ (
+        "winword.exe", "excel.exe", "powerpnt.exe",
+        "outlook.exe", "msaccess.exe", "onenote.exe"
+    )
+    | where FileName in~ ("powershell.exe", "pwsh.exe")
+    | project DeviceId, DeviceName, PowerShellTime=Timestamp, PowerShellPid=ProcessId;
+DeviceProcessEvents
+| where Timestamp > ago(30d)
+| where FileName in~ ("whoami.exe", "systeminfo.exe", "ipconfig.exe", "net.exe", "nltest.exe")
+   or ProcessCommandLine matches regex @"(?i)(^|\s)(whoami|dir|systeminfo|ipconfig|nltest)(\s|$)"
+| join kind=inner SuspiciousOfficePowerShell on DeviceId
+| where Timestamp between (PowerShellTime .. PowerShellTime + 10m)
+| project Timestamp, DeviceName, FileName, ProcessCommandLine,
+          InitiatingProcessFileName, PowerShellTime
+| order by Timestamp desc;
+
+
+// 6. ASR audit and block events relevant to Office macro attack chains
+DeviceEvents
+| where Timestamp > ago(30d)
+| where ActionType in (
+    "AsrOfficeChildProcessAudited",
+    "AsrOfficeChildProcessBlocked",
+    "AsrExecutableOfficeContentAudited",
+    "AsrExecutableOfficeContentBlocked",
+    "AsrOfficeMacroWin32ApiCallsAudited",
+    "AsrOfficeMacroWin32ApiCallsBlocked"
+)
+| project Timestamp, DeviceName, ActionType,
+          InitiatingProcessFileName, InitiatingProcessCommandLine,
+          FileName, FolderPath, AccountName, AdditionalFields
+| order by Timestamp desc;
