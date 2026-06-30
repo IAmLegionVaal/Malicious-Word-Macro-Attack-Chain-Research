@@ -111,6 +111,7 @@ See:
 - [Hardening](docs/04-hardening.md)
 - [Incident response](docs/05-incident-response.md)
 - [Safe lab](docs/06-safe-lab.md)
+- [Screenshot walkthrough](docs/07-screenshot-walkthrough.md)
 - [Microsoft Defender XDR KQL](detections/kql/microsoft-defender-xdr.kql)
 - [Sigma rules](detections/sigma/)
 - [YARA rule](detections/yara/suspicious_office_vba_strings.yar)
@@ -144,7 +145,8 @@ See:
 │   ├── 03-detection-engineering.md
 │   ├── 04-hardening.md
 │   ├── 05-incident-response.md
-│   └── 06-safe-lab.md
+│   ├── 06-safe-lab.md
+│   └── 07-screenshot-walkthrough.md
 ├── detections/
 │   ├── kql/
 │   ├── sigma/
@@ -183,9 +185,9 @@ Example static-analysis workflow:
 6. Correlate document, process, script, file, and network telemetry.
 ```
 
-## Publication note for the supplied screenshots
+## Screenshot examples
 
-The supplied screenshots visibly contain the creator handle `@cybertufan`. They are not covered by the MIT license. Confirm redistribution rights or replace them with original lab captures before publishing them in this public repository.
+The 17 screenshots are original, author-owned research material created by Dewald Pretorius and are used as illustrative examples throughout this repository.
 
 ## Further reading
 
