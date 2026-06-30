@@ -1,6 +1,6 @@
 # Screenshot walkthrough
 
-The original 17-frame sequence was used to reconstruct the attack chain described in this repository. The images visibly credit `@cybertufan` and are not committed here pending confirmation of redistribution rights. Replace this page with original lab captures before adding public media.
+The original 17-frame sequence is author-owned research material created by Dewald Pretorius and is used throughout this repository as illustrative example content.
 
 ## Frame sequence
 
