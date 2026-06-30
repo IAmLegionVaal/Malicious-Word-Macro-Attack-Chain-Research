@@ -9,6 +9,7 @@ Start here:
 - [Observed process sequence](samples/observed-lab-data/observed-process-sequence.csv)
 - [Observed network sequence](samples/observed-lab-data/observed-network-sequence.csv)
 - [Screenshot walkthrough](docs/07-screenshot-walkthrough.md)
+- [Upstream Powercat reference](docs/09-upstream-powercat-reference.md)
 
 ## Working-example values
 
@@ -27,4 +28,4 @@ Listener command:    nc -lvnp 1337
 Discovery commands:  whoami, dir
 ```
 
-The detailed guide reproduces the same topology and telemetry in a controlled VM network. It substitutes a fixed text-only TCP beacon for the interactive shell so the lab remains suitable for defensive research and detection testing.
+The detailed guide reproduces the same topology and telemetry in a controlled VM network. The repository itself substitutes a fixed text-only TCP beacon for the interactive shell, while the upstream Powercat project is linked separately as an external reference for authorized isolated-lab research.
