@@ -1,15 +1,10 @@
 # Notices
 
-## Screenshot rights
+## Screenshot ownership
 
-The 17 source screenshots visibly credit `@cybertufan`. They were supplied as educational reference material for this research project, but they have not been committed to this public repository pending confirmation of redistribution rights.
+The 17 screenshots used in this project are original, author-owned research material created by Dewald Pretorius and may be published and distributed with this repository.
 
-Before adding them publicly:
-
-1. Confirm that redistribution is permitted, or
-2. Replace them with original captures from an authorized lab.
-
-Any future third-party screenshots, embedded user interfaces, trademarks, or original video content are not licensed under this repository's MIT license. Rights remain with their respective owners.
+Embedded third-party application interfaces, product names, and trademarks visible in the screenshots remain the property of their respective owners.
 
 ## Microsoft and MITRE marks
 
