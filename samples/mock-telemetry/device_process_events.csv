@@ -1,0 +1,5 @@
+Timestamp,DeviceName,AccountName,InitiatingProcessFileName,InitiatingProcessParentFileName,FileName,ProcessCommandLine,ProcessId
+2026-06-30T08:00:00Z,LAB-WIN11,labuser,explorer.exe,userinit.exe,winword.exe,"WINWORD.EXE C:\Lab\invoice.docm",4100
+2026-06-30T08:00:02Z,LAB-WIN11,labuser,winword.exe,explorer.exe,powershell.exe,"powershell.exe [REDACTED: benign mock of hidden remote-content retrieval]",4220
+2026-06-30T08:00:05Z,LAB-WIN11,labuser,powershell.exe,winword.exe,cmd.exe,"cmd.exe [REDACTED: mock interactive shell]",4300
+2026-06-30T08:00:07Z,LAB-WIN11,labuser,cmd.exe,powershell.exe,whoami.exe,whoami,4340
